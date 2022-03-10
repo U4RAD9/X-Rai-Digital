@@ -1,0 +1,414 @@
+﻿@model IEnumerable<DOTNETCOREEXAMPLE.Models.SlotBookingMasterViewModel>
+@*@model IEnumerable<DOTNETCOREEXAMPLE.Models.Class_SLOT_BOOKING_MASTER>
+*@
+@using Microsoft.AspNetCore.Http;
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+}
+<script src="~/scripts/jquery-1.12.4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css" rel="stylesheet" />
+
+<script>
+    var Reach = function (i) {
+        //  alert(i);
+        // alert($("#mobile").val());
+
+        $.ajax({
+            url: "/SlotBookingMaster/Reach/",
+            type: "Post",
+            data: {
+                id: i
+
+
+            },
+            success: function (data) {
+                //    alert(data);
+                if (data == "success") {
+                    alert("Payment done");
+                    window.location.href = "/SlotBookingMaster/Index";
+                    //$("#enterotp").val("");
+                    //alert("failed");
+
+                }
+                else {
+                    //alert("All the Technicians at work!!");
+                }
+
+
+            }
+        })
+    }
+    var Acknowledge = function (i) {
+        //  alert(i);
+        // alert($("#mobile").val());
+
+        $.ajax({
+            url: "/SlotBookingMaster/Reach/",
+            type: "Post",
+            data: {
+                id: i
+
+
+            },
+            success: function (data) {
+                //    alert(data);
+                if (data == "success") {
+                    //  alert("Payment done");
+                    window.location.href = "/SlotBookingMaster/Index";
+                    //$("#enterotp").val("");
+                    //alert("failed");
+
+                }
+                else {
+                    //alert("All the Technicians at work!!");
+                }
+
+
+            }
+        })
+    }
+    var filedownloading = function (k) {
+        alert(k);
+        // alert($("#mobile").val());
+
+        $.ajax({
+            url: "/SlotBookingMaster/DownloadFile/",
+            type: "post",
+            data: {
+                SLOTBOOKINGID: k
+
+
+            },
+            success: function (data) {
+                //    alert(data);
+
+
+
+            }
+        })
+    }
+    var Allocate = function (i) {
+        //alert(i);
+        // alert($("#mobile").val());
+
+        $.ajax({
+            url: "/SlotBookingMaster/Allocate/",
+            type: "Post",
+            data: {
+                id: i
+
+
+            },
+            success: function (data) {
+                //   alert(data);
+                if (data == "success") {
+
+                    //    $("#enterotp").val("");
+                    //alert("Successfully Allocated");
+
+                }
+                else {
+                    alert("All the Technicians at work!!");
+                }
+
+
+            }
+        })
+    }
+</script>
+
+<p>
+    @*<a asp-action="Create">Create New</a>*@
+</p>
+<div class="section-heading-page">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <h1 class="heading-page text-center-xs">@ViewBag.Title.</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb text-right text-center-xs">
+                    <li>
+                        <a href="#">Slot Booking </a>
+                    </li>
+                    <li class="active">@ViewBag.Title</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayName("PHONE NUMBER")
+            </th>
+            <th>
+                @Html.DisplayName("PATIENT NAME")
+            </th>
+            @*<th>
+            @Html.DisplayNameFor(model => model.AGE)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.WEIGHT)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.GENDER)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ALTERNATEMOBILENUMBER)
+        </th>
+        <td>
+            @Html.DisplayNameFor(model => model.EMAIL)
+        </td>*@
+            <th>
+                @Html.DisplayName("SLOT")
+                @*@Html.Action("GetSlotName","SlotBookingMaster",new { SLOTID=})*@
+            </th>
+            @*<th>
+            @Html.DisplayNameFor(model => model.SLOTTYPEID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.VISITTYPEID)
+        </th>*@
+            <th>
+                @Html.DisplayName("SLOT BOOKING DATE")
+            </th>
+            <th>
+                @Html.DisplayName("SERVICE")
+            </th>
+            @*<th>
+            @Html.DisplayNameFor(model => model.SERVICEPROVIDERID)
+        </th>*@
+            <th>
+                @Html.DisplayName("PAYMENT TYPE")
+            </th>
+            <th>
+                @Html.DisplayName("PAYMENT STATUS")
+            </th>
+            <th>
+                @Html.DisplayName("STATUS")
+            </th>
+            <th>
+                @Html.DisplayName("PRICE")
+            </th>
+            <th>
+                @Html.DisplayName("OFFER%")
+            </th>
+            <th>
+                @Html.DisplayName("Net Payable Amount")
+            </th>
+           
+            <th>
+                Files
+            </th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.Count() == 0)
+        {
+            if (HttpContextAccessor.HttpContext.Session.GetString("RegistrationTypeId") == "1")
+            {
+        <tr><td colspan="6" style="text-align:center;font-size:16px">-- No reports/ no patient records --</td></tr>
+            }
+            else if (HttpContextAccessor.HttpContext.Session.GetString("RegistrationTypeId") == "2")
+            {
+        <tr><td colspan="6" style="text-align:center;font-size:16px">-- NO ALLOCATION ON YOUR NAME --</td></tr>
+            }
+            else if (HttpContextAccessor.HttpContext.Session.GetString("RegistrationTypeId") == "2")
+            {
+
+            }
+        }
+        else
+        {
+        @foreach (var item in Model)
+            {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.a.PHONENUMBER)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.d.PATIENTNAME)
+            @*Html.Action("GetPatientName", "PATIENTMASTER", new { PATIENTID = item.PATIENTID })*@
+            @*@Html.DisplayFor(modelItem => item.PATIENTNAME)*@
+        </td>
+        @*<td>
+            @Html.DisplayFor(modelItem => item.AGE)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.WEIGHT)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.GENDER)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ALTERNATEMOBILENUMBER)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.EMAIL)
+        </td>*@
+        <td>
+            @*<label asp-controller="SLOTMASTER" asp-action="GetStotName" asp-route-id="@item.SLOTID"/>*@
+            @*@{
+            string strSLOTID=@Html.RenderAction("GetSlotName", "SLOTMASTER", new { SLOTIID = item.SLOTID });
+            }
+            @strSLOTID*@
+            @Html.DisplayFor(modelItem => item.b.SLOTNAME)
+            @*@Html.DisplayFor(modelItem => item.a.SLOTID)*@
+        </td>
+        @*<td>
+            @Html.DisplayFor(modelItem => item.SLOTTYPEID)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.VISITTYPEID)
+        </td>*@
+        <td>
+            @Html.DisplayFor(modelItem => item.a.SLOTBOOKINGDATETIME)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.c.SERVICENAME)
+            @*Html.Action("GetServiceName", "SERVICEMASTER", new { SERVICETYPEID = item.SERVICETYPEID })*@
+            @*@Html.DisplayFor(modelItem => item.a.SERVICETYPEID)*@
+        </td>
+        @*<td>
+            @Html.DisplayFor(modelItem => item.SERVICEPROVIDERID)
+
+        </td>*@
+        <td>
+            @Html.DisplayFor(modelItem => item.a.PAYMENTMETHOD)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.a.PAYMENTSTATUS)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.a.STATUS)
+
+            @*<button onclick="filedownloading(@item.a.SLOTBOOKINGID)" class="btn btn-danger btn-sm">Prescription</button>*@
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.e.PRICE)
+
+            @*<button onclick="filedownloading(@item.a.SLOTBOOKINGID)" class="btn btn-danger btn-sm">Prescription</button>*@
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.g.OFFERDISCOUNT)
+
+            @*<button onclick="filedownloading(@item.a.SLOTBOOKINGID)" class="btn btn-danger btn-sm">Prescription</button>*@
+        </td>
+        @{
+
+                                            decimal s = item.e.PRICE - ((item.e.PRICE * item.g.OFFERDISCOUNT) / 100);
+        }
+    <td>
+       
+        @s
+        @*<button onclick="filedownloading(@item.a.SLOTBOOKINGID)" class="btn btn-danger btn-sm">Prescription</button>*@
+    </td>
+        
+
+        <td>
+            @{ string prescriptionfile = "\\prescriptionfiles\\" + @item.a.PRESCRIPTIONFILENAME + @item.a.EXTENSION;
+                            string servicefiles = "\\servicefiles\\" + @item.a.SERVICEFILENAME + @item.a.SERVICEEXTENSION;
+                            string reportfiles = "\\reportfiles\\" + @item.a.REPORTFILENAME + @item.a.REPORTEXTENSION;
+            }
+            @if (item.a.PRESCRIPTIONFILENAME == null || item.a.PRESCRIPTIONFILENAME == "") { }
+                        else
+                        {
+            <a href='@prescriptionfile' target="_blank">Prescription</a>
+            <hr />
+                        }
+            @if (item.a.SERVICEFILENAME == null || item.a.SERVICEFILENAME == "") { }
+                        else
+                        {
+            <a href='@servicefiles' target="_blank">@item.f.SERVICEGROUPNAME</a>
+            <hr />
+                        }
+            @if (item.a.REPORTFILENAME == null || item.a.REPORTFILENAME == "") { }
+                        else
+                        {
+            <a href='@reportfiles' target="_blank">Report</a>
+                        }
+
+        </td>
+        <td>
+
+            @if (HttpContextAccessor.HttpContext.Session.GetString("RegistrationTypeId") == "2")
+                        {
+                            if (item.a.STATUS == "Alloted" && item.a.PAYMENTMETHOD == "HOME PAYMENT" && item.a.PAYMENTSTATUS == null)
+                            {
+            <button onclick="Reach(@item.a.SLOTBOOKINGID)" class="btn btn-danger btn-sm">Pay</button>
+                            }
+                            else if (item.a.STATUS == "Alloted" && item.a.PAYMENTMETHOD == "ONLINE" && item.a.PAYMENTSTATUS == "Payment Successful")
+                            {
+            <button onclick="Acknowledge(@item.a.SLOTBOOKINGID)" class="btn btn-danger btn-sm">Acknowledged</button>
+                            }
+                            else
+                            {
+
+                            }
+                            if (item.a.PRESCRIPTIONFILENAME == null || item.a.PRESCRIPTIONFILENAME == "")
+                            {
+            @Html.ActionLink("Edit", "Edit", new { id = item.a.SLOTBOOKINGID })  <span> | </span>
+
+                            }
+                            if (item.a.PAYMENTSTATUS == "Payment Successful")
+                            {
+            @Html.ActionLink("Edit", "Edit", new { id = item.a.SLOTBOOKINGID })  <span> | </span>
+            @Html.ActionLink("Details", "Details", new { id = item.a.SLOTBOOKINGID })
+                            }
+                            else
+                            {
+
+            @Html.ActionLink("Details", "Details", new { id = item.a.SLOTBOOKINGID })
+                            }
+                        }
+                        else if (HttpContextAccessor.HttpContext.Session.GetString("RegistrationTypeId") == "1")
+                        {
+                            if (item.a.PAYMENTSTATUS == "Payment Successful" || item.a.STATUS == "Alloted" || item.a.STATUS == "Reached" || item.a.STATUS == "Received" || item.a.STATUS == "Files Uploaded")
+                            { }
+                            else
+                            {
+            @Html.ActionLink("Edit", "Edit", new { id = item.a.SLOTBOOKINGID })  <span> | </span>
+                            }
+
+            @Html.ActionLink("Details", "Details", new { id = item.a.SLOTBOOKINGID })
+                            if (item.a.PAYMENTSTATUS == "Payment Successful")
+                            {
+            <span> | </span>
+            @Html.ActionLink("Invoice", "Invoice", new { id = item.a.SLOTBOOKINGID }, new { target = "_blank" })
+                            }
+                            else
+                            {
+
+                            }
+                        }
+                        else
+                        {
+                            if (item.a.STATUS == null || item.a.STATUS == "Booked")
+                            {
+            @*<button onclick="Allocate(@item.a.SLOTBOOKINGID)" class="btn btn-danger btn-sm">Allocate</button> <span> | </span>*@
+            @Html.ActionLink("Edit", "Edit", new { id = item.a.SLOTBOOKINGID })
+                            }
+                            else
+                            {
+            <button class="btn btn-sm">Allocated</button>
+                            }
+
+            @*@Html.ActionLink("Allocate", "Allocate", new { id = item.SLOTBOOKINGID })*@
+                        }
+
+            @*@Html.ActionLink("Delete", "Delete", new { id = item.SLOTBOOKINGID })*@
+        </td>
+    </tr>
+            }
+        }
+
+    </tbody>
+</table>
+@*asp-page="/Allocate" asp-route-id="@item.SLOTBOOKINGID"*@
